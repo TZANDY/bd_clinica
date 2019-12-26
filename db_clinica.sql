@@ -4,7 +4,7 @@ CREATE TABLE tb_cargo(
     id_car int primary key auto_increment,
     descripcion varchar(40),
     fecha_registro datetime
-)
+);
 CREATE TABLE tb_departamento(
     id_dep int primary key auto_increment,
     descripcion varchar(40)
@@ -116,17 +116,29 @@ CREATE TABLE tb_horario_empleado(
     id_empleado int,
     hora_inicio time,
     hora_fin time,
-    cambio_hor_emp int,
     fecha_registro datetime
 );
 CREATE TABLE tb_permiso(
-	id_per int primary key auto_increment,
-    id_horario_emp int,
-    max_cambios int default 3,
-    descripcion varchar(100),
+    id_per int primary key auto_increment,
+    id_empleado_solicita int,
+    id_empleado_autoriza int,
+    id_permiso_detalle int,
+    max_permisos int default 5,
+    días int,
     estado varchar(20),
-    fecha_actualizacion datetime
+    fecha_registro datetime,
+    foreign key (id_empleado_solicita) references tb_empleado(id_emp),
+    foreign key (id_empleado_autoriza) references tb_empleado(id_emp)
 );
+CREATE TABLE tb_permiso_detalle(
+    id_per_det int primary key auto_increment,
+    id_permiso
+    asunto varchar(100),
+    descripcion varchar(100),
+    fecha_inicio datetime,
+    fecha_fin datetime,
+);
+
 CREATE TABLE tb_ficha_cita(
     id_fic_cit int primary key auto_increment,
     id_usuario int,
@@ -165,5 +177,6 @@ CREATE TABLE tb_historial_clinico_detalle(
     descripcion_3 varchar(100),
     descripcion_4 varchar(100),
     descripcion_5 varchar(100),
-    fecha_registro date
+    fecha_registro date,
+foreign key (id_historial_clinico) references tb_historial_clinico(id_his_cli)
 );
