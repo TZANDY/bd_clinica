@@ -1,6 +1,10 @@
-create database db_clinica;
+﻿create database db_clinica;
 use db_clinica;
-
+CREATE TABLE tb_cargo(
+    id_car int primary key auto_increment,
+    descripcion varchar(40),
+    fecha_registro datetime
+)
 CREATE TABLE tb_departamento(
     id_dep int primary key auto_increment,
     descripcion varchar(40)
@@ -40,42 +44,45 @@ CREATE TABLE tb_especialidad
 (
     id_esp int primary key auto_increment,
     id_cargo int,
-    descripcion varchar(50),
-    fecha_registro date,
-    min_emp int(3),
-    max_emp int(3)
+    descripcion varchar(90),
+    min_emp int,
+    max_emp int,
+    fecha_registro  datetime
 );
 
 CREATE TABLE tb_usuario
 (
     id_usu int primary key auto_increment,
     dni char(8),
-    nombre varchar(30),
-    apellido varchar(20),
+    nombre varchar(50),
+    apellido varchar(50),
     direccion varchar(50),
     id_distrito int,
     correo varchar(30),
     fnacimiento varchar(20),
     celular varchar(20),
-    estadocivil varchar(20),
-    id_cargo int,
-    fecha_registro date
+    estado_civil varchar(20),
+    tipo_usuario char default 'USUARIO',
+    fecha_registro datetime,
+    foreign key (id_distrito) references tb_distrito(id_dis)
 );
 
 CREATE TABLE tb_empleado
 (
     id_emp int primary key auto_increment,
     dni char(8),
-    nombre varchar(30),
-    apellido varchar(20),
+    nombre varchar(50),
+    apellido varchar(50),
     direccion varchar(50),
     id_distrito int,
     correo varchar(30),
     fnacimiento varchar(20),
     celular varchar(20),
-    estadocivil varchar(20),
+    estado_civil varchar(20),
     id_cargo int,
-    fecha_registro date
+    fecha_registro datetime,
+    foreign key (id_distrito) references tb_distrito(id_dis),
+    foreign key (id_cargo) references tb_cargo(id_car)
 );
 CREATE TABLE tb_login_usuario(
     id_log_usu int primary key auto_increment,
@@ -83,7 +90,8 @@ CREATE TABLE tb_login_usuario(
     usuario varchar(100),
     clave varchar(100),
     estado varchar(20),
-    fecha_acceso date
+    fecha_acceso datetime,
+    foreign key (id_usuario) references tb_usuario(id_usu)
 );
 CREATE TABLE tb_login_empleado(
     id_log_emp int primary key auto_increment,
@@ -91,35 +99,41 @@ CREATE TABLE tb_login_empleado(
     usuario varchar(100),
     clave varchar(100),
     estado varchar(20),
-    fecha_acceso date
+    fecha_acceso datetime,
+    foreign key (id_empleado) references tb_empleado(id_emp)
 );
 CREATE TABLE tb_turno_empleado(
     id_tur_emp int primary key auto_increment,
     descripcion varchar(20),
     min_emp_turno int(3),
     max_emp_turno int(3),
-    fecha_registro date,
-    fecha_actualizacion date
+    fecha_registro datetime,
+    fecha_actualizacion datetime
 );
 
 CREATE TABLE tb_horario_empleado(
     id_hor_emp int primary key auto_increment,
     id_empleado int,
-    hora_inicio varchar(10),
-    hora_fin varchar(10),
-    rango_horas_dia int,
-    rango_horas_semana int,
-    cambio_hor_emp int(2),
-    fecha_registro date
+    hora_inicio time,
+    hora_fin time,
+    cambio_hor_emp int,
+    fecha_registro datetime
 );
-
+CREATE TABLE tb_permiso(
+	id_per int primary key auto_increment,
+    id_horario_emp int,
+    max_cambios int default 3,
+    descripcion varchar(100),
+    estado varchar(20),
+    fecha_actualizacion datetime
+);
 CREATE TABLE tb_ficha_cita(
     id_fic_cit int primary key auto_increment,
     id_usuario int,
     id_sede int,
     estado_cita varchar(50),
-    fecha_registro date,
-    fecha_actualizacion date
+    fecha_registro datetime,
+    fecha_actualizacion datetime
 );
 
 CREATE TABLE tb_atencion(
