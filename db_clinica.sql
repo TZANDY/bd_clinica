@@ -10,7 +10,7 @@ CREATE TABLE tb_departamento(
     descripcion varchar(40)
 );
 /*
-insert into tb_departamento(,descripcion) values ('LIMA'),('CALLAO'),('AREQUIPA'),('AMAZONAS'),('ANCASH'),('APURIMAC'),('AYACUCHO'),('CAJAMARCA'),('CUSCO'),('HUANCAVELICA'),('HUANUCO'),('ICA'),('JUNIN'),('LA LIBERTAD'),('LAMBAYEQUE'),('LORETO'),('MADRE DE DIOS'),('MOQUEGUA'),('PASCO'),('PIURA'),('PUNO'),('SAN MARTIN'),('TACNA'),('TUMBES'),('UCAYALI')
+insert into tb_departamento(descripcion) values ('LIMA'),('CALLAO'),('AREQUIPA'),('AMAZONAS'),('ANCASH'),('APURIMAC'),('AYACUCHO'),('CAJAMARCA'),('CUSCO'),('HUANCAVELICA'),('HUANUCO'),('ICA'),('JUNIN'),('LA LIBERTAD'),('LAMBAYEQUE'),('LORETO'),('MADRE DE DIOS'),('MOQUEGUA'),('PASCO'),('PIURA'),('PUNO'),('SAN MARTIN'),('TACNA'),('TUMBES'),('UCAYALI')
 */
 Create table tb_provincia(
     id_pro int primary key auto_increment,
