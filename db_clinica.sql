@@ -33,15 +33,22 @@ Create table tb_distrito(
     descripcion varchar(40),
     foreign key (id_provincia) references tb_provincia(id_pro)
 );
+
 /*
 insert into tb_distrito(id_provincia,descripcion) 
 values 
 (53,'CALLAO'),(53,'BELLAVISTA'),(53,'CARMEN DE LA LEGUA-REYNOSO'),(53,'LA PERLA'),(53,'LA PUNTA'),(53,'VENTANILLA'),(53,'MI PERÚ'),
 (8,'CERCADO DE LIMA'),(8,'ATE'),(8,'BARRANCO'),(8,'BREÑA'),(8,'COMAS'),(8,'CHORRILLOS'),(8,'EL AGUSTINO'),(8,'JESÚS MARÍA'),(8,'LA MOLINA'),(8,'LA VICTORIA'),(8,'LINCE'),(8,'MAGDALENA DEL MAR'),(8,'MIRAFLORES'),(8,'PUEBLO LIBRE'),(8,'PUENTE PIEDRA'),(8,'RIMAC'),(8,'SAN ISIDRO'),(8,'INDEPENDENCIA'),(8,'SAN JUAN DE MIRAFLORES'),(8,'SAN LUIS'),(8,'SAN MARTIN DE PORRES'),(8,'SAN MIGUEL'),(8,'SANTIAGO DE SURCO'),(8,'SURQUILLO'),(8,'VILLA MARÍA DEL TRIUNFO'),(8,'SAN JUAN DE LURIGANCHO'),(8,'SANTA ROSA'),(8,'LOS OLIVOS'),(8,'SAN BORJA'),(8,'VILLA EL SAVADOR'),(8,'SANTA ANITA')
 */
-
-CREATE TABLE tb_especialidad
-(
+CREATE TABLE tb_sede (
+    id_sed int primary key auto_increment,
+    id_provincia int,
+    id_distrito int,
+    descripcion varchar(40),
+    direccion varchar(50),
+    foreign key (id_distrito) references tb_distrito(id_dis)
+);
+CREATE TABLE tb_especialidad(
     id_esp int primary key auto_increment,
     id_cargo int,
     descripcion varchar(90),
@@ -50,8 +57,7 @@ CREATE TABLE tb_especialidad
     fecha_registro  datetime
 );
 
-CREATE TABLE tb_usuario
-(
+CREATE TABLE tb_usuario(
     id_usu int primary key auto_increment,
     dni char(8),
     nombre varchar(50),
@@ -62,13 +68,12 @@ CREATE TABLE tb_usuario
     fnacimiento varchar(20),
     celular varchar(20),
     estado_civil varchar(20),
-    tipo_usuario char default 'USUARIO',
+    tipo_usuario varchar(20) DEFAULT 'USUARIO',
     fecha_registro datetime,
     foreign key (id_distrito) references tb_distrito(id_dis)
 );
 
-CREATE TABLE tb_empleado
-(
+CREATE TABLE tb_empleado(
     id_emp int primary key auto_increment,
     dni char(8),
     nombre varchar(50),
@@ -84,6 +89,7 @@ CREATE TABLE tb_empleado
     foreign key (id_distrito) references tb_distrito(id_dis),
     foreign key (id_cargo) references tb_cargo(id_car)
 );
+
 CREATE TABLE tb_login_usuario(
     id_log_usu int primary key auto_increment,
     id_usuario int,
@@ -93,6 +99,7 @@ CREATE TABLE tb_login_usuario(
     fecha_acceso datetime,
     foreign key (id_usuario) references tb_usuario(id_usu)
 );
+
 CREATE TABLE tb_login_empleado(
     id_log_emp int primary key auto_increment,
     id_empleado int,
@@ -102,14 +109,16 @@ CREATE TABLE tb_login_empleado(
     fecha_acceso datetime,
     foreign key (id_empleado) references tb_empleado(id_emp)
 );
+
 CREATE TABLE tb_turno_empleado(
     id_tur_emp int primary key auto_increment,
     descripcion varchar(20),
-    min_emp_turno int(3),
-    max_emp_turno int(3),
+    min_emp_turno int,
+    max_emp_turno int,
     fecha_registro datetime,
     fecha_actualizacion datetime
 );
+
 
 CREATE TABLE tb_horario_empleado(
     id_hor_emp int primary key auto_increment,
@@ -118,25 +127,34 @@ CREATE TABLE tb_horario_empleado(
     hora_fin time,
     fecha_registro datetime
 );
+
 CREATE TABLE tb_permiso(
     id_per int primary key auto_increment,
     id_empleado_solicita int,
     id_empleado_autoriza int,
-    id_permiso_detalle int,
     max_permisos int default 5,
-    días int,
+    cantidad_dias int,
     estado varchar(20),
     fecha_registro datetime,
     foreign key (id_empleado_solicita) references tb_empleado(id_emp),
     foreign key (id_empleado_autoriza) references tb_empleado(id_emp)
 );
+
 CREATE TABLE tb_permiso_detalle(
     id_per_det int primary key auto_increment,
-    id_permiso
+    id_permiso int,
     asunto varchar(100),
     descripcion varchar(100),
     fecha_inicio datetime,
     fecha_fin datetime,
+    foreign key (id_permiso) references tb_permiso(id_per)
+);
+
+CREATE TABLE tb_permiso_saldo(
+	id_per_sal int primary key auto_increment,
+    id_permiso int,
+    dias int,
+    foreign key (id_permiso) references tb_permiso(id_per)
 );
 
 CREATE TABLE tb_ficha_cita(
@@ -145,16 +163,9 @@ CREATE TABLE tb_ficha_cita(
     id_sede int,
     estado_cita varchar(50),
     fecha_registro datetime,
-    fecha_actualizacion datetime
-);
-
-CREATE TABLE tb_atencion(
-    id_ate int primary key auto_increment,
-    id_fic_cit int,
-    id_empleado int,
-    estado_atencion varchar(50),
-    id_tipo_atencion int(5),
-    fecha_registro date
+    fecha_actualizacion datetime,
+    foreign key (id_usuario) references tb_usuario(id_usu),
+    foreign key (id_sede) references tb_sede(id_sed)
 );
 
 CREATE TABLE tb_tipo_atencion(
@@ -163,10 +174,23 @@ CREATE TABLE tb_tipo_atencion(
     nota double
 );
 
+CREATE TABLE tb_atencion(
+    id_ate int primary key auto_increment,
+    id_ficha_cita int,
+    id_empleado int,
+    estado_atencion varchar(50),
+    id_tipo_atencion int,
+    fecha_registro date,
+    foreign key (id_ficha_cita) references tb_ficha_cita(id_fic_cit),
+    foreign key (id_empleado) references tb_empleado(id_emp),
+    foreign key (id_tipo_atencion) references tb_tipo_atencion(id_tip_ate)
+);
+
 CREATE TABLE tb_historial_clinico(
     id_his_cli int primary key auto_increment,
     id_atencion int,
-    fecha_registro date
+    fecha_registro date,
+    foreign key (id_atencion) references tb_atencion(id_ate)
 );
 
 CREATE TABLE tb_historial_clinico_detalle(
@@ -178,5 +202,5 @@ CREATE TABLE tb_historial_clinico_detalle(
     descripcion_4 varchar(100),
     descripcion_5 varchar(100),
     fecha_registro date,
-foreign key (id_historial_clinico) references tb_historial_clinico(id_his_cli)
+    foreign key (id_historial_clinico) references tb_historial_clinico(id_his_cli)
 );
